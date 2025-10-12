@@ -11,6 +11,10 @@ services:
     command: ["litellm", "--port", "4000", "--config", "/app/config/config.yaml"]
     dns:
       - 10.2.1.130
+    extra_hosts:
+      - "ollama.homehub.dk:10.2.0.190"
+      - "qdrant.homehub.dk:10.2.0.190"
+      - "vllm.homehub.dk:10.2.0.190"
     volumes:
       - /srv/docker/litellm/config:/app/config
     networks: [frontend, ai]
@@ -32,6 +36,9 @@ services:
       WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY}"
     dns:
       - 10.2.1.130
+    extra_hosts:
+      - "ollama.homehub.dk:10.2.0.190"
+      - "qdrant.homehub.dk:10.2.0.190"
     volumes:
       - /srv/docker/open-webui/data:/app/backend/data
     networks: [frontend, ai]
