@@ -24,6 +24,8 @@ services:
       traefik.enable: "true"
       traefik.http.routers.litellm.rule: Host(`openai.homehub.dk`)
       traefik.http.routers.litellm.entrypoints: websecure
+      traefik.http.routers.litellm.tls: "true"
+      traefik.http.routers.litellm.tls.certresolver: "cf"
       traefik.http.services.litellm.loadbalancer.server.port: "4000"
       # traefik.http.routers.litellm.middlewares: authentik@docker  # TODO: Enable after Authentik configured
 
@@ -48,6 +50,8 @@ services:
       traefik.enable: "true"
       traefik.http.routers.webui.rule: Host(`chat.homehub.dk`)
       traefik.http.routers.webui.entrypoints: websecure
+      traefik.http.routers.webui.tls: "true"
+      traefik.http.routers.webui.tls.certresolver: "cf"
       traefik.http.services.webui.loadbalancer.server.port: "8080"
       # traefik.http.routers.webui.middlewares: authentik@docker  # TODO: Enable after Authentik configured
 
