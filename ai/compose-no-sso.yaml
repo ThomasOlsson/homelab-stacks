@@ -14,6 +14,8 @@ services:
       - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
       - OAUTH_SCOPES=openid email profile
       - OPENID_REDIRECT_URI=https://chat.homehub.dk/oauth/oidc/callback
+    dns:
+      - 10.2.1.130
     volumes:
       - /srv/docker/open-webui:/app/backend/data
     networks:
@@ -30,9 +32,14 @@ services:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
     restart: unless-stopped
+    environment:
+      - DATABASE_URL=sqlite:////app/config/litellm.db
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
     volumes:
       - /srv/docker/litellm/config:/app/config
-    command: ["--config", "/app/config/config.yaml", "--port", "4000"]
+    command: ["--config", "/app/config/config.yaml", "--port", "4000", "--detailed_debug"]
+    dns:
+      - 10.2.1.130
     networks:
       - frontend
     labels:
