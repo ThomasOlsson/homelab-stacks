@@ -9,7 +9,7 @@ services:
     container_name: litellm
     image: ghcr.io/berriai/litellm:main-latest
     platform: linux/amd64
-    command: ["litellm", "--port", "4000", "--config", "/app/config/config.yaml"]
+    command: ["--port", "4000", "--config", "/app/config/config.yaml"]
     dns:
       - 10.2.1.130
     extra_hosts:
@@ -25,7 +25,7 @@ services:
       traefik.http.routers.litellm.rule: Host(`openai.homehub.dk`)
       traefik.http.routers.litellm.entrypoints: websecure
       traefik.http.services.litellm.loadbalancer.server.port: "4000"
-      traefik.http.routers.litellm.middlewares: authentik@docker
+      # traefik.http.routers.litellm.middlewares: authentik@docker  # TODO: Enable after Authentik configured
 
   open-webui:
     container_name: open-webui
@@ -49,5 +49,5 @@ services:
       traefik.http.routers.webui.rule: Host(`chat.homehub.dk`)
       traefik.http.routers.webui.entrypoints: websecure
       traefik.http.services.webui.loadbalancer.server.port: "8080"
-      traefik.http.routers.webui.middlewares: authentik@docker
+      # traefik.http.routers.webui.middlewares: authentik@docker  # TODO: Enable after Authentik configured
 
