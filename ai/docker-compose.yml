@@ -7,7 +7,8 @@ networks:
 services:
   litellm:
     container_name: litellm
-    image: ghcr.io/berriai/litellm:latest
+    image: ghcr.io/berriai/litellm:main-latest
+    platform: linux/amd64
     command: ["litellm", "--port", "4000", "--config", "/app/config/config.yaml"]
     dns:
       - 10.2.1.130
