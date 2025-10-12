@@ -1,16 +1,11 @@
 model_list:
-  - model_name: qwen2.5-coder-14b
+  - model_name: local/ollama-qwen2.5-coder-14b
     litellm_params:
-      model: ollama/qwen2.5-coder:14b
-      api_base: http://ollama.homehub.dk:11434
-  
-  - model_name: qwen2.5-7b
+      model: "ollama/qwen2.5-coder:14b"
+      api_base: "http://ollama.homehub.dk:11434"
+  - model_name: local/vllm-llama3-8b
     litellm_params:
-      model: openai/Qwen2.5-7B-Instruct
-      api_base: http://vllm.homehub.dk:8000/v1
-
+      model: "hosted_vllm/meta-llama/Meta-Llama-3-8B-Instruct"
+      api_base: "http://vllm.homehub.dk:8000"
 general_settings:
-  master_key: ${LITELLM_MASTER_KEY}
-  database_url: "sqlite:////app/config/litellm.db"
-  health_check_interval: 300
-
+  telemetry: false
