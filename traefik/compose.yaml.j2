@@ -18,7 +18,7 @@ services:
       - ./certs/:/var/traefik/certs/:rw
     {% if traefik_tls_enabled %}
     env_file:
-      - ./.env.
+      - ./.env
     {% endif %}
     environment:
       - TZ={{ container_timezone }}

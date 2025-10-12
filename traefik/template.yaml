@@ -59,16 +59,26 @@ metadata:
   draft: true
 spec:
   # Ansible deployment configuration
+  service_name: "traefik"
+  container_name: "traefik"
   traefik_enabled: true
   traefik_entrypoint: web
   traefik_tls_enabled: false
   traefik_tls_entrypoint: websecure
   traefik_tls_certresolver: cf
+  traefik_tls_acme_provider: "cloudflare"
+  traefik_tls_acme_email: "admin@example.com"
+  traefik_tls_redirect: true
   traefik_host: "traefik.example.dk"
   traefik_api_enabled: false
   traefik_dashboard_enabled: false
   network_name: "proxy"
   network_enabled: true
+  network_external: false
+  ports_enabled: true
+  restart_policy: "unless-stopped"
+  container_timezone: "UTC"
+  swarm_enabled: false
   
   # Config templates and files for Ansible to render
   config_templates:
@@ -81,6 +91,7 @@ spec:
       dest: "config/files/tls.yaml"
     - src: "config/files/external-services.yaml"
       dest: "config/files/external-services.yaml"
+  env_template: "env.j2"
   
   # Original spec for CLI tool
   general:
