@@ -57,18 +57,33 @@ metadata:
     For more information, visit: https://goauthentik.io/docs/
 spec:
   # Ansible deployment configuration
+  service_name: "authentik"
+  container_name: "authentik-server"
   authentik_host: "auth.example.dk"
   authentik_version: "2025.6.3"
   traefik_enabled: false
   traefik_tls_enabled: false
   traefik_tls_certresolver: cf
+  traefik_entrypoint: "web"
+  traefik_tls_entrypoint: "websecure"
+  traefik_network: "frontend"
   authentik_secret_key: "change-this-to-a-random-string"
   database_password: "change-this-password"
+  database_external: false
+  postgres_db: "authentik"
+  postgres_user: "authentik"
+  ports_enabled: false
+  network_enabled: false
+  restart_policy: "unless-stopped"
   
   # Config templates and files for Ansible to render
   config_templates: []
   config_files: []
-  env_template: ".env.authentik.j2"
+  env_templates:
+    - src: "env.authentik.j2"
+      dest: ".env.authentik"
+    - src: "env.postgres.j2"
+      dest: ".env.postgres"
   
   # Original spec for CLI tool
   general:
