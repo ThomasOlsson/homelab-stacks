@@ -13,7 +13,7 @@ services:
     {% endif %}
     volumes:
       - ./config:/etc/bind
-      - bind9_zones:/var/lib/bind
+      - ./zones:/var/lib/bind
       - bind9_cache:/var/cache/bind
     {% if network_enabled %}
     networks:
@@ -22,8 +22,6 @@ services:
     restart: {{ restart_policy | default('unless-stopped') }}
 
 volumes:
-  bind9_zones:
-    driver: local
   bind9_cache:
     driver: local
 

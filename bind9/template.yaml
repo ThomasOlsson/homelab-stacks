@@ -57,6 +57,9 @@ spec:
     - src: "config/tsig.key.j2"
       dest: "config/tsig.key"
       mode: "0600"
+    - src: "zones/db.zone.j2"
+      dest: "zones/db.{{ domain_name }}"
+      mode: "0644"
   config_files: []
   
   # Original spec for CLI tool
