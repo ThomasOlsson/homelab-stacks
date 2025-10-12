@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101203         ; Serial (YYYYMMDDNN)
+                        2025101204         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -26,4 +26,14 @@ srv-prod-1.prx-prod-2   IN      A       10.2.0.190
 
 ; Home Assistant (format: ha-prod-X.prx-prod-Y.homehub.dk)
 ha-prod-1.prx-prod-1    IN      A       10.2.1.200
+
+; Services (running on lxc-prod-2.prx-prod-1 behind Traefik)
+; All services point to 10.2.1.130 where Traefik handles routing
+traefik                 IN      A       10.2.1.130
+authentik               IN      A       10.2.1.130
+ai                      IN      A       10.2.1.130
+whoami                  IN      A       10.2.1.130
+wazuh                   IN      A       10.2.1.130
+checkmk                 IN      A       10.2.1.130
+ha                      IN      A       10.2.1.200
 
