@@ -4,8 +4,8 @@ services:
     container_name: open-webui
     restart: unless-stopped
     environment:
-      - OLLAMA_BASE_URLS=http://ollama.homehub.dk:11434
-      - QDRANT_URI=http://qdrant.homehub.dk:6333
+      - OLLAMA_BASE_URLS=http://10.2.0.190:11434
+      - QDRANT_URI=http://10.2.0.190:6333
       - ENABLE_OAUTH_SIGNUP=true
       - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=false
       - OAUTH_PROVIDER_NAME=authentik
