@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        {{ '%Y%m%d01' | strftime }}    ; Serial
+                        2025101201         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
