@@ -1,0 +1,42 @@
+$TTL 86400
+@       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
+                        2025101206         ; Serial (YYYYMMDDNN)
+                        3600               ; Refresh
+                        1800               ; Retry
+                        604800             ; Expire
+                        86400 )            ; Minimum TTL
+
+; Name servers
+@       IN      NS      ns1.{{ domain_name }}.
+
+; DNS Server
+ns1     IN      A       10.2.1.130
+
+; Proxmox Hosts
+prx-prod-1              IN      A       10.2.0.200
+prx-prod-2              IN      A       10.2.0.203
+
+; LXC Containers (format: lxc-prod-X.prx-prod-Y.homehub.dk)
+lxc-prod-1.prx-prod-2   IN      A       10.2.0.241
+lxc-prod-2.prx-prod-1   IN      A       10.2.1.130
+lxc-prod-3.prx-prod-1   IN      A       10.2.10.130
+
+; VM Servers (format: srv-prod-X.prx-prod-Y.homehub.dk)
+srv-prod-1.prx-prod-2   IN      A       10.2.0.190
+
+; Home Assistant (format: ha-prod-X.prx-prod-Y.homehub.dk)
+ha-prod-1.prx-prod-1    IN      A       10.2.1.200
+
+; Services (running on lxc-prod-2.prx-prod-1 behind Traefik)
+; All services use CNAME to point to the LXC container
+traefik                 IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+authentik               IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+ai                      IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+whoami                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+wazuh                   IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+checkmk                 IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+glance                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+
+; Home Assistant points to its dedicated VM
+ha                      IN      CNAME   ha-prod-1.prx-prod-1.homehub.dk.
+
