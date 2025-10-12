@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101202         ; Serial (YYYYMMDDNN)
+                        2025101203         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -13,6 +13,17 @@ $TTL 86400
 ns1     IN      A       10.2.1.130
 
 ; Proxmox Hosts
-prx-prod-1      IN      A       10.2.0.200
-prx-prod-2      IN      A       10.2.0.203
+prx-prod-1              IN      A       10.2.0.200
+prx-prod-2              IN      A       10.2.0.203
+
+; LXC Containers (format: lxc-prod-X.prx-prod-Y.homehub.dk)
+lxc-prod-1.prx-prod-2   IN      A       10.2.0.241
+lxc-prod-2.prx-prod-1   IN      A       10.2.1.130
+lxc-prod-3.prx-prod-1   IN      A       10.2.10.130
+
+; VM Servers (format: srv-prod-X.prx-prod-Y.homehub.dk)
+srv-prod-1.prx-prod-2   IN      A       10.2.0.190
+
+; Home Assistant (format: ha-prod-X.prx-prod-Y.homehub.dk)
+ha-prod-1.prx-prod-1    IN      A       10.2.1.200
 
