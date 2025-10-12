@@ -1,7 +1,7 @@
 // Custom DNS Zones Configuration
 // Add your authoritative zones here
 
-// Example zone for {{ domain_name | default('example.com') }}
+// Primary zone for {{ domain_name | default('example.com') }}
 zone "{{ domain_name | default('example.com') }}" {
     type master;
     file "/var/lib/bind/db.{{ domain_name | default('example.com') }}";
@@ -16,6 +16,17 @@ zone "{{ domain_name | default('example.com') }}" {
     // dnssec-policy default;
     // inline-signing yes;
 };
+
+{% if additional_zones is defined %}
+{% for zone in additional_zones %}
+// Additional zone for {{ zone.name }}
+zone "{{ zone.name }}" {
+    type master;
+    file "/var/lib/bind/db.{{ zone.name }}";
+    allow-transfer { key "{{ tsig_key_name | default('transfer-key') }}"; };
+};
+{% endfor %}
+{% endif %}
 
 // Example reverse zone for 192.168.1.0/24
 // zone "1.168.192.in-addr.arpa" {

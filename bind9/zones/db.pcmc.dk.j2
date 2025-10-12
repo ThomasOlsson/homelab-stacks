@@ -1,0 +1,14 @@
+$TTL 86400
+@       IN      SOA     ns1.homehub.dk. {{ contact_email | replace('@', '.') }}. (
+                        2025101201         ; Serial (YYYYMMDDNN)
+                        3600               ; Refresh
+                        1800               ; Retry
+                        604800             ; Expire
+                        86400 )            ; Minimum TTL
+
+; Name servers (using homehub.dk DNS)
+@       IN      NS      ns1.homehub.dk.
+
+; Proxmox Hosts
+prx-prod-1      IN      A       10.3.0.210
+

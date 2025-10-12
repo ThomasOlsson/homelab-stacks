@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101201         ; Serial (YYYYMMDDNN)
+                        2025101202         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -9,6 +9,10 @@ $TTL 86400
 ; Name servers
 @       IN      NS      ns1.{{ domain_name }}.
 
-; A records
+; DNS Server
 ns1     IN      A       10.2.1.130
+
+; Proxmox Hosts
+prx-prod-1      IN      A       10.2.0.200
+prx-prod-2      IN      A       10.2.0.203
 

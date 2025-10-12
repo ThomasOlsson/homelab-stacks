@@ -47,6 +47,7 @@ spec:
   domain_name: "home.arpa"
   tsig_key_name: "transfer-key"
   bind9_version: "9.20-24.10_edge"
+  additional_zones: []
   
   # Config templates and files for Ansible to render
   config_templates:
