@@ -8,7 +8,7 @@ services:
   litellm:
     container_name: litellm
     image: ghcr.io/berriai/litellm:latest
-    command: ["--port","4000","--config","/app/config/config.yaml"]
+    command: ["litellm", "--port", "4000", "--config", "/app/config/config.yaml"]
     dns:
       - 10.2.1.130
     volumes:
