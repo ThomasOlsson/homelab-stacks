@@ -1,0 +1,68 @@
+- name: {{ dashboard_title | default('Services') }}
+  columns:
+  - size: full
+    widgets:
+      - type: monitor
+        title: Infrastructure Services
+        sites:
+          {% for service in infrastructure_services | default([]) %}
+          - title: {{ service.title }}
+            url: {{ service.url }}
+            icon: {{ service.icon | default('si:server') }}
+            allow-insecure: {{ service.allow_insecure | default(true) }}
+            {% if service.check_url is defined %}
+            check-url: {{ service.check_url }}
+            {% endif %}
+          {% endfor %}
+      {% if home_automation_services | default([]) | length > 0 %}
+      - type: monitor
+        title: Home Automation
+        sites:
+          {% for service in home_automation_services | default([]) %}
+          - title: {{ service.title }}
+            url: {{ service.url }}
+            icon: {{ service.icon | default('si:homeassistant') }}
+            allow-insecure: {{ service.allow_insecure | default(true) }}
+            {% if service.check_url is defined %}
+            check-url: {{ service.check_url }}
+            {% endif %}
+          {% endfor %}
+      {% endif %}
+      {% if docker_monitor_enabled | default(true) %}
+      - type: docker-containers
+        title: Docker Containers
+        limit: {{ docker_container_limit | default(15) }}
+        sort-by: name
+        show-stopped: false
+      {% endif %}
+  - size: small
+    widgets:
+      - type: clock
+        hour-format: {{ clock_format | default('24h') }}
+        timezones:
+          - timezone: {{ primary_timezone | default('UTC') }}
+            label: {{ primary_timezone_label | default('UTC') }}
+      {% if releases_widget_enabled | default(true) %}
+      - type: releases
+        title: Software Updates
+        cache: 1d
+        repositories:
+          {% for repo in release_repositories | default([]) %}
+          - {{ repo }}
+          {% endfor %}
+      {% endif %}
+      {% if bookmarks_enabled | default(true) %}
+      - type: bookmarks
+        title: Quick Links
+        groups:
+          {% for group in bookmark_groups | default([]) %}
+          - title: {{ group.title }}
+            color: {{ group.color | default('10 100 50') }}
+            links:
+              {% for link in group.links %}
+              - title: {{ link.title }}
+                url: {{ link.url }}
+              {% endfor %}
+          {% endfor %}
+      {% endif %}
+

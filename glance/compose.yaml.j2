@@ -1,0 +1,46 @@
+services:
+  {{ service_name | default('glance') }}:
+    image: {{ glance_image }}:{{ glance_version }}
+    container_name: {{ container_name | default('glance') }}
+    restart: {{ restart_policy | default('unless-stopped') }}
+    {% if ports_enabled %}
+    ports:
+      - "{{ glance_port }}:8080"
+    {% endif %}
+    volumes:
+      - ./config:/app/config
+      - ./assets:/app/assets
+      {% if docker_socket_enabled %}
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      {% endif %}
+    environment:
+      - TZ={{ container_timezone | default('UTC') }}
+    {% if traefik_enabled %}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ service_name }}.rule=Host(`{{ traefik_host }}`)"
+      - "traefik.http.routers.{{ service_name }}.entrypoints={{ traefik_entrypoint }}"
+      - "traefik.http.services.{{ service_name }}.loadbalancer.server.port=8080"
+      {% if traefik_tls_enabled %}
+      - "traefik.http.routers.{{ service_name }}-tls.rule=Host(`{{ traefik_host }}`)"
+      - "traefik.http.routers.{{ service_name }}-tls.entrypoints={{ traefik_tls_entrypoint }}"
+      - "traefik.http.routers.{{ service_name }}-tls.tls=true"
+      - "traefik.http.routers.{{ service_name }}-tls.tls.certresolver={{ traefik_tls_certresolver }}"
+      - "traefik.http.routers.{{ service_name }}-tls.service={{ service_name }}"
+      {% endif %}
+    {% endif %}
+    {% if network_enabled %}
+    networks:
+      - {{ network_name }}
+    {% endif %}
+
+{% if network_enabled %}
+networks:
+  {{ network_name }}:
+    {% if network_external %}
+    external: true
+    {% else %}
+    driver: bridge
+    {% endif %}
+{% endif %}
+

@@ -1,0 +1,96 @@
+---
+kind: compose
+metadata:
+  name: Glance
+  description: >
+    Glance is a self-hosted dashboard that puts all your feeds in one place.
+    A modern, feature-rich dashboard for monitoring services, Docker containers,
+    RSS feeds, weather, releases, and more.
+
+
+    Project: https://github.com/glanceapp/glance
+
+    Documentation: https://github.com/glanceapp/glance/blob/main/docs/configuration.md
+  version: latest
+  author: Thomas Olsson
+  date: '2025-10-12'
+  tags:
+    - dashboard
+    - monitoring
+    - homelab
+  next_steps: |
+    1. Start the dashboard:
+       docker compose up -d
+
+    2. Access Glance:
+       http://localhost:8080 (or configured port)
+
+    3. Customize your dashboard:
+       - Edit config/dashboard.yml to add your services
+       - Modify config/glance.yml for general settings
+       - Add custom CSS in assets/user.css
+
+    4. Enable Docker monitoring:
+       Make sure the Docker socket is mounted (docker_socket_enabled: true)
+
+    For more information, visit: https://github.com/glanceapp/glance
+  draft: false
+spec:
+  # Ansible deployment configuration
+  service_name: "glance"
+  container_name: "glance"
+  glance_image: "glanceapp/glance"
+  glance_version: "latest"
+  glance_port: 8080
+  
+  # Traefik integration
+  traefik_enabled: false
+  traefik_tls_enabled: false
+  traefik_tls_certresolver: "cf"
+  traefik_entrypoint: "web"
+  traefik_tls_entrypoint: "websecure"
+  traefik_host: "glance.example.com"
+  
+  # Network configuration
+  network_enabled: false
+  network_name: "frontend"
+  network_external: true
+  ports_enabled: true
+  
+  # Container settings
+  restart_policy: "unless-stopped"
+  container_timezone: "UTC"
+  docker_socket_enabled: true
+  
+  # Dashboard configuration
+  dashboard_title: "Services"
+  clock_format: "24h"
+  primary_timezone: "UTC"
+  primary_timezone_label: "UTC"
+  
+  # Widget settings
+  docker_monitor_enabled: true
+  docker_container_limit: 15
+  releases_widget_enabled: true
+  bookmarks_enabled: true
+  
+  # Services lists (to be overridden in inventory)
+  infrastructure_services: []
+  home_automation_services: []
+  release_repositories: []
+  bookmark_groups: []
+  
+  # Config templates for Ansible to render
+  config_templates:
+    - src: "config/glance.yml.j2"
+      dest: "config/glance.yml"
+      mode: "0644"
+    - src: "config/dashboard.yml.j2"
+      dest: "config/dashboard.yml"
+      mode: "0644"
+  
+  config_files:
+    - src: "assets/user.css"
+      dest: "assets/user.css"
+      mode: "0644"
+
