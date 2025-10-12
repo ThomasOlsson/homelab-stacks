@@ -1,6 +1,6 @@
 version: "3.9"
 networks:
-  proxy:
+  frontend:
     external: true
   ai: {}
 
@@ -13,7 +13,7 @@ services:
       - 10.2.1.130
     volumes:
       - /srv/docker/litellm/config:/app:ro
-    networks: [proxy, ai]
+    networks: [frontend, ai]
     restart: unless-stopped
     labels:
       traefik.enable: "true"
@@ -34,7 +34,7 @@ services:
       - 10.2.1.130
     volumes:
       - /srv/docker/open-webui/data:/app/backend/data
-    networks: [proxy, ai]
+    networks: [frontend, ai]
     restart: unless-stopped
     labels:
       traefik.enable: "true"
