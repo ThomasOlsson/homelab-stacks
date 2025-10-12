@@ -21,6 +21,18 @@ metadata:
     - monitoring
   draft: true
 spec:
+  # Ansible deployment configuration
+  checkmk_host: "monitor.example.dk"
+  monitoring_version: "latest"
+  traefik_enabled: false
+  traefik_tls_enabled: false
+  traefik_tls_certresolver: cf
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  config_files: []
+  
+  # Original spec for CLI tool
   general:
     vars:
       monitoring_version:

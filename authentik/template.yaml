@@ -56,6 +56,21 @@ metadata:
 
     For more information, visit: https://goauthentik.io/docs/
 spec:
+  # Ansible deployment configuration
+  authentik_host: "auth.example.dk"
+  authentik_version: "2025.6.3"
+  traefik_enabled: false
+  traefik_tls_enabled: false
+  traefik_tls_certresolver: cf
+  authentik_secret_key: "change-this-to-a-random-string"
+  database_password: "change-this-password"
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  config_files: []
+  env_template: ".env.authentik.j2"
+  
+  # Original spec for CLI tool
   general:
     vars:
       service_name:

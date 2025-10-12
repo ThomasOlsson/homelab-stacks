@@ -58,6 +58,31 @@ metadata:
     For more information, visit: https://doc.traefik.io/traefik/
   draft: true
 spec:
+  # Ansible deployment configuration
+  traefik_enabled: true
+  traefik_entrypoint: web
+  traefik_tls_enabled: false
+  traefik_tls_entrypoint: websecure
+  traefik_tls_certresolver: cf
+  traefik_host: "traefik.example.dk"
+  traefik_api_enabled: false
+  traefik_dashboard_enabled: false
+  network_name: "proxy"
+  network_enabled: true
+  
+  # Config templates and files for Ansible to render
+  config_templates:
+    - src: "config/traefik.yaml.j2"
+      dest: "config/traefik.yaml"
+    - src: "config/files/middlewares.yaml.j2"
+      dest: "config/files/middlewares.yaml"
+  config_files:
+    - src: "config/files/tls.yaml"
+      dest: "config/files/tls.yaml"
+    - src: "config/files/external-services.yaml"
+      dest: "config/files/external-services.yaml"
+  
+  # Original spec for CLI tool
   general:
     title: "General"
     required: true

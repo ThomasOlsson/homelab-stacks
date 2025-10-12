@@ -41,6 +41,25 @@ metadata:
     For more information, visit: https://bind9.readthedocs.io/
   draft: true
 spec:
+  # Ansible deployment configuration
+  bind_listen_v4: "0.0.0.0"
+  bind_allow_transfer: []
+  domain_name: "home.arpa"
+  tsig_key_name: "transfer-key"
+  bind9_version: "9.20-24.10_edge"
+  
+  # Config templates and files for Ansible to render
+  config_templates:
+    - src: "config/named.conf.j2"
+      dest: "config/named.conf"
+    - src: "config/named.conf.zones.j2"
+      dest: "config/named.conf.zones"
+    - src: "config/tsig.key.j2"
+      dest: "config/tsig.key"
+      mode: "0600"
+  config_files: []
+  
+  # Original spec for CLI tool
   general:
     vars:
       bind9_version:

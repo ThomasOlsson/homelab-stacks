@@ -23,6 +23,28 @@ metadata:
     - siem
   draft: true
 spec:
+  # Ansible deployment configuration
+  wazuh_host: "wazuh.example.dk"
+  wazuh_manager_version: "latest"
+  traefik_enabled: false
+  traefik_tls_enabled: false
+  traefik_tls_certresolver: cf
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  config_files:
+    - src: "config/wazuh_cluster/wazuh_manager.conf"
+      dest: "config/wazuh_cluster/wazuh_manager.conf"
+    - src: "config/wazuh_dashboard/opensearch_dashboards.yml"
+      dest: "config/wazuh_dashboard/opensearch_dashboards.yml"
+    - src: "config/wazuh_dashboard/wazuh.yml"
+      dest: "config/wazuh_dashboard/wazuh.yml"
+    - src: "config/wazuh_indexer/wazuh.indexer.yml"
+      dest: "config/wazuh_indexer/wazuh.indexer.yml"
+    - src: "config/wazuh_indexer/internal_users.yml"
+      dest: "config/wazuh_indexer/internal_users.yml"
+  
+  # Original spec for CLI tool
   general:
     vars:
       wazuh.manager_version:

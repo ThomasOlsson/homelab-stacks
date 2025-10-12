@@ -20,6 +20,25 @@ metadata:
     - testing
   draft: true
 spec:
+  # Ansible deployment configuration
+  service_name: "whoami"
+  container_name: "whoami"
+  traefik_enabled: false
+  traefik_tls_enabled: false
+  traefik_tls_certresolver: cf
+  traefik_entrypoint: web
+  traefik_tls_entrypoint: websecure
+  traefik_host: "whoami.example.dk"
+  ports_enabled: false
+  network_enabled: false
+  restart_policy: "unless-stopped"
+  whoami_version: latest
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  config_files: []
+  
+  # Original spec for CLI tool
   ports:
     vars:
       ports_http:
