@@ -9,6 +9,8 @@ services:
     container_name: litellm
     image: ghcr.io/berriai/litellm:latest
     command: ["--port","4000","--config","/app/config.yaml"]
+    dns:
+      - 10.2.1.130
     volumes:
       - /srv/docker/litellm/config:/app:ro
     networks: [proxy, ai]
@@ -28,6 +30,8 @@ services:
       QDRANT_URI: "http://qdrant.homehub.dk:6333"
       QDRANT_API_KEY: "${QDRANT_API_KEY}"
       WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY}"
+    dns:
+      - 10.2.1.130
     volumes:
       - /srv/docker/open-webui/data:/app/backend/data
     networks: [proxy, ai]
