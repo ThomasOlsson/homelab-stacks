@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.homehub.dk. {{ contact_email | replace('@', '.') }}. (
-                        2025101201         ; Serial (YYYYMMDDNN)
+                        2025101202         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -11,4 +11,7 @@ $TTL 86400
 
 ; Proxmox Hosts
 prx-prod-1      IN      A       10.3.0.210
+
+; Proxmox Backup Server
+pbs-prod-1      IN      A       10.3.0.211
 
