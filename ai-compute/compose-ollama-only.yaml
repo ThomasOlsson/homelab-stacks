@@ -28,23 +28,6 @@ services:
       - "6333:6333"
     networks: [ai]
 
-  vllm:
-    image: vllm/vllm-openai:latest
-    container_name: vllm
-    restart: unless-stopped
-    profiles: ["vllm"]  # Optional: Enable with 'docker compose --profile vllm up'
-    command: ["--model", "Qwen/Qwen2.5-7B-Instruct", "--host", "0.0.0.0", "--port", "8000", "--max-model-len", "8192", "--gpu-memory-utilization", "0.40"]  # Reduced from 0.95 to leave room for Ollama
-    ports:
-      - "8000:8000"
-    networks: [ai]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-
 networks:
   ai:
     driver: bridge

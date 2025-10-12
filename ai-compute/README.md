@@ -4,9 +4,19 @@ This stack runs on **srv-prod-1.prx-prod-2.homehub.dk** (10.2.0.190) and provide
 
 ## Services
 
-- **Ollama**: LLM runtime for local models (port 11434)
-- **Qdrant**: Vector database for embeddings (port 6333)
-- **vLLM**: High-performance LLM inference server (port 8000)
+- **Ollama**: LLM runtime for local models (port 11434) - Always enabled
+- **Qdrant**: Vector database for embeddings (port 6333) - Always enabled
+- **vLLM**: High-performance LLM inference server (port 8000) - OPTIONAL, disabled by default
+
+### Why is vLLM disabled by default?
+
+Both Ollama and vLLM require significant GPU VRAM. On a 16GB GPU:
+- qwen2.5-coder:14b (Ollama) needs ~9-10 GB
+- Qwen2.5-7B-Instruct (vLLM) needs ~14 GB
+
+Running both simultaneously causes **"out of memory" errors**. Choose one:
+- **Use Ollama** (default): Best for interactive use, multiple models, easy model management
+- **Use vLLM**: Best for high-throughput inference, API-only access, production workloads
 
 ## DNS Records (Internal Only)
 
@@ -30,19 +40,25 @@ All services share the same NVIDIA GPU via nvidia-docker runtime.
 
 ## Deployment
 
+### Default (Ollama + Qdrant only)
 ```bash
-# Create directories
-ssh root@10.2.0.190 "mkdir -p /opt/stacks/ai-compute /srv/docker/ollama/data /srv/docker/qdrant/storage"
-
-# Copy compose file
-scp compose.yaml root@10.2.0.190:/opt/stacks/ai-compute/
-
-# Deploy
+# Deploy default stack (no vLLM)
 ssh root@10.2.0.190 "cd /opt/stacks/ai-compute && docker compose up -d"
 
 # Pre-pull model
 ssh root@10.2.0.190 "docker exec ollama ollama pull qwen2.5-coder:14b"
 ```
+
+### Optional: Enable vLLM (if you need it)
+```bash
+# Stop Ollama to free GPU memory
+ssh root@10.2.0.190 "cd /opt/stacks/ai-compute && docker compose stop ollama"
+
+# Start with vLLM profile
+ssh root@10.2.0.190 "cd /opt/stacks/ai-compute && docker compose --profile vllm up -d"
+```
+
+**Note**: With vLLM enabled and `gpu-memory-utilization=0.40`, you might be able to run both simultaneously with smaller models.
 
 ## Verification
 
