@@ -1,0 +1,30 @@
+---
+kind: compose
+metadata:
+  name: Openwebui
+  description: >
+    OpenWebUI is an open-source web-based user interface for managing and interacting with AI models.
+    It provides a user-friendly platform to deploy, monitor, and utilize various AI models for tasks such as
+    image generation, text generation, and more. OpenWebUI supports integration with popular AI frameworks
+    and offers features like model management, user authentication, and real-time interaction.
+
+
+    Project: https://openwebui.io/
+
+    Documentation: https://docs.openwebui.io/
+
+    GitHub: https://github.com/openwebui/openwebui
+  version: 0.6.33
+  author: Christian Lempa
+  date: '2025-10-08'
+  tags:
+    - ai
+    - automation
+  draft: true
+spec:
+  general:
+    vars:
+      openwebui_version:
+        type: str
+        description: Openwebui version
+        default: latest
