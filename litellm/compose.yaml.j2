@@ -7,11 +7,11 @@ services:
   litellm:
     container_name: litellm
     image: ghcr.io/berriai/litellm:latest
-    command: ["--port","4000","--config","/app/config.yaml"]
+    command: ["--port","4000","--config","/app/config/config.yaml"]
     env_file:
       - .env.litellm
     volumes:
-      - /srv/docker/litellm/config:/app:ro
+      - /srv/docker/litellm/config:/app/config:ro
     extra_hosts:
       - "ollama.{{ domain }}:{{ ai_compute_ip }}"
     networks: [frontend]
