@@ -161,3 +161,4 @@ OPENID_REDIRECT_URI=https://chat.homehub.dk/oauth/oidc/callback
 - Authentik OAuth2 Provider Docs: https://docs.goauthentik.io/docs/providers/oauth2/
 - Open WebUI OAuth Docs: https://docs.openwebui.com/getting-started/env-configuration#oauth
 
+
