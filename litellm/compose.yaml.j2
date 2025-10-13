@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.litellm
     volumes:
-      - /srv/docker/litellm/config:/app/config:ro
+      - /srv/docker/litellm/config:/app/config
     extra_hosts:
       - "ollama.{{ domain }}:{{ ai_compute_ip }}"
     networks: [frontend]
