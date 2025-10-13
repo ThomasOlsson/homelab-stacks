@@ -4,6 +4,8 @@ services:
     container_name: ollama
     image: ollama/ollama:latest
     env_file: [.env.ollama]
+    ports:
+      - "11434:11434"
     volumes: [/srv/docker/ollama/data:/root/.ollama]
     restart: unless-stopped
     healthcheck:
