@@ -27,7 +27,7 @@ services:
       traefik.http.routers.litellm.tls: "true"
       traefik.http.routers.litellm.tls.certresolver: "cf"
       traefik.http.services.litellm.loadbalancer.server.port: "4000"
-      # traefik.http.routers.litellm.middlewares: authentik@docker  # TODO: Enable after Authentik configured
+      traefik.http.routers.litellm.middlewares: authentik@docker
 
   open-webui:
     container_name: open-webui
@@ -53,5 +53,5 @@ services:
       traefik.http.routers.webui.tls: "true"
       traefik.http.routers.webui.tls.certresolver: "cf"
       traefik.http.services.webui.loadbalancer.server.port: "8080"
-      # traefik.http.routers.webui.middlewares: authentik@docker  # TODO: Enable after Authentik configured
+      traefik.http.routers.webui.middlewares: authentik@docker
 
