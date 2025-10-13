@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101210         ; Serial (YYYYMMDDNN)
+                        2025101311         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -36,7 +36,6 @@ openai                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 ; AI Services - Internal (Management server, no public access)
 ollama                  IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
 qdrant                  IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
-vllm                    IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
 
 ; Home Assistant (format: ha-prod-X.prx-prod-Y.homehub.dk)
 ha-prod-1.prx-prod-1    IN      A       10.2.1.200

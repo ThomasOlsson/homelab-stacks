@@ -1,0 +1,26 @@
+version: "3.9"
+networks:
+  frontend:
+    external: true
+
+services:
+  litellm:
+    container_name: litellm
+    image: ghcr.io/berriai/litellm:latest
+    command: ["--port","4000","--config","/app/config.yaml"]
+    env_file:
+      - .env.litellm
+    volumes:
+      - /srv/docker/litellm/config:/app:ro
+    extra_hosts:
+      - "ollama.{{ domain }}:{{ ai_compute_ip }}"
+    networks: [frontend]
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.litellm.rule: Host(`openai.{{ domain }}`)
+      traefik.http.routers.litellm.entrypoints: websecure
+      traefik.http.routers.litellm.tls: "true"
+      traefik.http.services.litellm.loadbalancer.server.port: "4000"
+      traefik.http.routers.litellm.middlewares: authentik@docker
+

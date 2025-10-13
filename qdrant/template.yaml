@@ -1,0 +1,38 @@
+---
+kind: compose
+metadata:
+  name: Qdrant
+  description: >
+    Qdrant is a vector similarity search engine and vector database. It provides
+    a production-ready service with a convenient API to store, search, and manage
+    vectors with additional payloads. Optimized for extended filtering support.
+
+
+    Project: https://qdrant.tech/
+
+    Documentation: https://qdrant.tech/documentation/
+
+    GitHub: https://github.com/qdrant/qdrant
+  version: latest
+  author: "Thomas Olsson"
+  date: "2025-10-13"
+  tags:
+    - ai
+    - vector-database
+    - search
+  draft: false
+spec:
+  # Ansible deployment configuration
+  service_name: "qdrant"
+  container_name: "qdrant"
+  traefik_enabled: false
+  restart_policy: "unless-stopped"
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  env_template: "env.qdrant.j2"
+  
+  # Original spec for CLI tool
+  general:
+    vars: {}
+

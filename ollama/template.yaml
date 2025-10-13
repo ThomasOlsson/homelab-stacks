@@ -1,0 +1,47 @@
+---
+kind: compose
+metadata:
+  name: Ollama
+  description: >
+    Ollama is a lightweight, extensible framework for building and running large
+    language models locally. It provides a simple API for creating, running, and
+    managing models with automatic GPU acceleration support.
+
+
+    Project: https://ollama.ai/
+
+    Documentation: https://github.com/ollama/ollama/blob/main/README.md
+
+    GitHub: https://github.com/ollama/ollama
+  version: latest
+  author: "Thomas Olsson"
+  date: "2025-10-13"
+  tags:
+    - ai
+    - llm
+    - gpu
+  draft: false
+spec:
+  # Ansible deployment configuration
+  service_name: "ollama"
+  container_name: "ollama"
+  traefik_enabled: false
+  restart_policy: "unless-stopped"
+  gpu_enabled: true
+  
+  # Config templates and files for Ansible to render
+  config_templates: []
+  env_template: "env.ollama.j2"
+  
+  # Original spec for CLI tool
+  general:
+    vars:
+      ollama_num_ctx:
+        type: int
+        description: Context window size for models
+        default: 4096
+      ollama_keep_alive:
+        type: str
+        description: How long to keep models loaded in memory
+        default: "30m"
+

@@ -1,0 +1,54 @@
+---
+kind: compose
+metadata:
+  name: LiteLLM
+  description: >
+    LiteLLM is an OpenAI-compatible API gateway that provides a unified interface
+    to multiple AI providers including local models (Ollama), OpenAI, Anthropic,
+    and more. It enables load balancing, fallbacks, and cost tracking across providers.
+
+
+    Project: https://docs.litellm.ai/
+
+    Documentation: https://docs.litellm.ai/docs/
+
+    GitHub: https://github.com/BerriAI/litellm
+  version: latest
+  author: "Thomas Olsson"
+  date: "2025-10-13"
+  tags:
+    - ai
+    - api-gateway
+    - llm
+  draft: false
+spec:
+  # Ansible deployment configuration
+  service_name: "litellm"
+  container_name: "litellm"
+  traefik_enabled: true
+  traefik_host: "openai.{{ domain }}"
+  traefik_entrypoint: websecure
+  traefik_tls_enabled: true
+  traefik_middleware: "authentik@docker"
+  network_name: "frontend"
+  network_external: true
+  restart_policy: "unless-stopped"
+  
+  # Config templates and files for Ansible to render
+  config_templates:
+    - src: "config.yaml.j2"
+      dest: "/srv/docker/litellm/config/config.yaml"
+  env_template: "env.litellm.j2"
+  
+  # Original spec for CLI tool
+  general:
+    vars:
+      domain:
+        type: str
+        description: Base domain name
+        default: homehub.dk
+      ai_compute_ip:
+        type: str
+        description: IP address of compute server running Ollama
+        default: 10.2.0.190
+
