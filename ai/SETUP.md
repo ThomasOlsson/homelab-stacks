@@ -160,3 +160,4 @@ ssh root@10.2.0.190 "docker exec ollama ollama pull qwen2.5-coder:14b"
 - **Network Isolation**: Compute stack runs on separate server from UI stack
 
 
+

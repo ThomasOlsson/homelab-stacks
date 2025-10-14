@@ -107,3 +107,4 @@ curl -Ik https://openai.homehub.dk/v1/models  # Expect SSO redirect
 - GPU-heavy workloads run on Management server, UI runs on Trusted server
 
 
+
