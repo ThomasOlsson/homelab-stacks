@@ -11,6 +11,12 @@ model_list:
       model: "ollama/qwen2.5-coder:7b"
       api_base: "http://ollama.{{ domain }}:11434"
 
+  # HEAVY (for tough tasks): Qwen2.5-Coder 14B
+  - model_name: agent/heavy
+    litellm_params:
+      model: "ollama/qwen2.5-coder:14b"
+      api_base: "http://ollama.{{ domain }}:11434"
+
   # GENERAL small: Mistral 7B
   - model_name: agent/mistral7b
     litellm_params:
@@ -21,12 +27,6 @@ model_list:
   - model_name: agent/deepseek6.7b
     litellm_params:
       model: "ollama/deepseek-coder:6.7b-instruct"
-      api_base: "http://ollama.{{ domain }}:11434"
-
-  # HEAVY (keep for tough tasks): Qwen2.5-Coder 14B
-  - model_name: agent/heavy
-    litellm_params:
-      model: "ollama/qwen2.5-coder:14b"
       api_base: "http://ollama.{{ domain }}:11434"
 
   # Back-compat alias the user already used
