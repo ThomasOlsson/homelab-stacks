@@ -11,9 +11,14 @@ services:
       {% if traefik_enabled %}
       {% if traefik_tls_enabled %}
       - N8N_EDITOR_BASE_URL=https://{{ traefik_host | default('n8n.home.arpa') }}
+      - N8N_WEBHOOK_URL=https://{{ traefik_host | default('n8n.home.arpa') }}/
       {% else %}
       - N8N_EDITOR_BASE_URL=http://{{ traefik_host | default('n8n.home.arpa') }}
+      - N8N_WEBHOOK_URL=http://{{ traefik_host | default('n8n.home.arpa') }}/
       {% endif %}
+      {% endif %}
+      {% if n8n_encryption_key is defined %}
+      - N8N_ENCRYPTION_KEY={{ n8n_encryption_key }}
       {% endif %}
       {% if database_enabled %}
       - DB_TYPE=postgresdb
