@@ -1,4 +1,3 @@
----
 # N8N External Service Configuration
 # N8N runs on lxc-prod-1 (10.2.0.130:5678) and is proxied through Traefik
 
