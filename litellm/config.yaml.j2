@@ -1,9 +1,43 @@
 model_list:
+  # FAST (planning/CLI): Llama 3.1 8B
+  - model_name: agent/fast
+    litellm_params:
+      model: "ollama/llama3.1:8b"
+      api_base: "http://ollama.{{ domain }}:11434"
+
+  # CODE (regex/files): Qwen2.5-Coder 7B
+  - model_name: agent/code
+    litellm_params:
+      model: "ollama/qwen2.5-coder:7b"
+      api_base: "http://ollama.{{ domain }}:11434"
+
+  # GENERAL small: Mistral 7B
+  - model_name: agent/mistral7b
+    litellm_params:
+      model: "ollama/mistral:7b"
+      api_base: "http://ollama.{{ domain }}:11434"
+
+  # ALT small coder: DeepSeek Coder 6.7B Instruct
+  - model_name: agent/deepseek6.7b
+    litellm_params:
+      model: "ollama/deepseek-coder:6.7b-instruct"
+      api_base: "http://ollama.{{ domain }}:11434"
+
+  # HEAVY (keep for tough tasks): Qwen2.5-Coder 14B
+  - model_name: agent/heavy
+    litellm_params:
+      model: "ollama/qwen2.5-coder:14b"
+      api_base: "http://ollama.{{ domain }}:11434"
+
+  # Back-compat alias the user already used
   - model_name: local/ollama-qwen2.5-coder-14b
     litellm_params:
       model: "ollama/qwen2.5-coder:14b"
       api_base: "http://ollama.{{ domain }}:11434"
+
 general_settings:
   telemetry: false
+
+
 
 
