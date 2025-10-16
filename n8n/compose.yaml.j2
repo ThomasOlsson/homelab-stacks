@@ -8,14 +8,9 @@ services:
       - TZ={{ container_timezone | default('UTC') }}
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RUNNERS_ENABLED=true
-      {% if traefik_enabled %}
-      {% if traefik_tls_enabled %}
-      - N8N_EDITOR_BASE_URL=https://{{ traefik_host | default('n8n.home.arpa') }}
-      - N8N_WEBHOOK_URL=https://{{ traefik_host | default('n8n.home.arpa') }}/
-      {% else %}
-      - N8N_EDITOR_BASE_URL=http://{{ traefik_host | default('n8n.home.arpa') }}
-      - N8N_WEBHOOK_URL=http://{{ traefik_host | default('n8n.home.arpa') }}/
-      {% endif %}
+      {% if traefik_host is defined %}
+      - N8N_EDITOR_BASE_URL=https://{{ traefik_host }}
+      - N8N_WEBHOOK_URL=https://{{ traefik_host }}/
       {% endif %}
       {% if n8n_encryption_key is defined %}
       - N8N_ENCRYPTION_KEY={{ n8n_encryption_key }}

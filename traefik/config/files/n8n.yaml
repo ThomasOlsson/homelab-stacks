@@ -1,0 +1,26 @@
+---
+# N8N External Service Configuration
+# N8N runs on lxc-prod-1 (10.2.0.130:5678) and is proxied through Traefik
+
+http:
+  routers:
+    n8n-http:
+      rule: "Host(`n8n.homehub.dk`)"
+      service: n8n-service
+      entryPoints:
+        - web
+
+    n8n-https:
+      rule: "Host(`n8n.homehub.dk`)"
+      service: n8n-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cf
+
+  services:
+    n8n-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.2.0.130:5678"
+
