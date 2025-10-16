@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101210         ; Serial (YYYYMMDDNN)
+                        2025101601         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -50,6 +50,9 @@ whoami                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 wazuh                   IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 checkmk                 IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 glance                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+
+; Management/Automation Services (running on lxc-prod-1)
+n8n                     IN      CNAME   lxc-prod-1.prx-prod-1.homehub.dk.
 
 ; Home Assistant points to its dedicated VM
 ha                      IN      CNAME   ha-prod-1.prx-prod-1.homehub.dk.
