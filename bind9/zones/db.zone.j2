@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025102202         ; Serial (YYYYMMDDNN)
+                        2025102203         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -56,4 +56,5 @@ ha                      IN      CNAME   ha-prod-1.prx-prod-1.homehub.dk.
 
 ; IoT Services routing through Traefik on lxc-prod-2
 z2m.home                IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+ha.home                 IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 
