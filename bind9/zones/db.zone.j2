@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025101601         ; Serial (YYYYMMDDNN)
+                        2025102201         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -20,7 +20,7 @@ prx-prod-2              IN      A       10.2.0.203
 pbs-prod-1              IN      A       10.2.0.135
 
 ; LXC Containers (format: lxc-prod-X.prx-prod-Y.homehub.dk)
-lxc-prod-1.prx-prod-2   IN      A       10.2.0.241
+lxc-prod-1.prx-prod-1   IN      A       10.2.0.130
 lxc-prod-2.prx-prod-1   IN      A       10.2.1.130
 lxc-prod-3.prx-prod-1   IN      A       10.2.10.130
 
@@ -36,7 +36,6 @@ openai                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 ; AI Services - Internal (Management server, no public access)
 ollama                  IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
 qdrant                  IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
-vllm                    IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
 
 ; Home Assistant (format: ha-prod-X.prx-prod-Y.homehub.dk)
 ha-prod-1.prx-prod-1    IN      A       10.2.1.200
@@ -54,4 +53,7 @@ n8n                     IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 
 ; Home Assistant points to its dedicated VM
 ha                      IN      CNAME   ha-prod-1.prx-prod-1.homehub.dk.
+
+; Wildcard routing for *.home.homehub.dk through Traefik on lxc-prod-2
+*.home                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 
