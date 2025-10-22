@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025102201         ; Serial (YYYYMMDDNN)
+                        2025102202         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -54,6 +54,6 @@ n8n                     IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 ; Home Assistant points to its dedicated VM
 ha                      IN      CNAME   ha-prod-1.prx-prod-1.homehub.dk.
 
-; Wildcard routing for *.home.homehub.dk through Traefik on lxc-prod-2
-*.home                  IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+; IoT Services routing through Traefik on lxc-prod-2
+z2m.home                IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
 
