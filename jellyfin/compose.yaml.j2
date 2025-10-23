@@ -1,0 +1,120 @@
+version: "3.9"
+
+services:
+  {{ service_name | default('jellyfin') }}:
+    image: {{ jellyfin_image | default('ghcr.io/jellyfin/jellyfin') }}:{{ jellyfin_version | default('latest') }}
+    container_name: {{ container_name | default('jellyfin') }}
+    env_file:
+      - .env.jellyfin
+    {% if jellyfin_user is defined and jellyfin_user %}
+    user: "{{ jellyfin_user }}"
+    {% endif %}
+    environment:
+      - TZ={{ jellyfin_timezone | default('UTC') }}
+    volumes:
+      - {{ jellyfin_config_path | default('/srv/docker/jellyfin/config') }}:/config
+      - {{ jellyfin_cache_path | default('/srv/docker/jellyfin/cache') }}:/cache
+      - {{ jellyfin_transcode_path | default('/srv/docker/jellyfin/transcode') }}:/transcode
+      - {{ jellyfin_media_path | default('/srv/media') }}:/media
+    {% if jellyfin_extra_volumes is defined %}
+    {% for volume in jellyfin_extra_volumes %}
+      - {{ volume }}
+    {% endfor %}
+    {% endif %}
+    {% if jellyfin_devices is defined %}
+    devices:
+    {% for device in jellyfin_devices %}
+      - {{ device }}
+    {% endfor %}
+    {% endif %}
+    {% if jellyfin_group_add is defined %}
+    group_add:
+    {% for group in jellyfin_group_add %}
+      - {{ group }}
+    {% endfor %}
+    {% endif %}
+    {% if ports_enabled | default(false) %}
+    ports:
+      - "{{ jellyfin_http_port | default(8096) }}:8096"
+      - "{{ jellyfin_https_port | default(8920) }}:8920"
+    {% endif %}
+    {% if jellyfin_network_mode | default('host') == 'host' %}
+    network_mode: host
+    {% else %}
+    expose:
+      - "{{ jellyfin_internal_http_port | default(8096) }}"
+    networks:
+      - {{ traefik_network | default('internal') }}
+    {% if additional_networks is defined %}
+    {% for network in additional_networks %}
+      - {{ network }}
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+    {% if traefik_enabled | default(true) %}
+    labels:
+      - "traefik.enable=true"
+      {% if jellyfin_network_mode | default('host') != 'host' %}
+      - "traefik.docker.network={{ traefik_network | default('internal') }}"
+      {% endif %}
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.entryPoints={{ traefik_entrypoint | default('secure') }}"
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.rule={{ traefik_router_rule | default("Host(`" ~ (traefik_host | default('jellyfin.example.dk')) ~ "`)") }}"
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.middlewares={{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}"
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.service={{ traefik_service_reference | default((service_name | default('jellyfin')) ~ '-svc@file') }}"
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.tls={{ 'true' if traefik_tls_enabled | default(true) else 'false' }}"
+      {% if traefik_tls_enabled | default(true) %}
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.tls.certResolver={{ traefik_tls_certresolver | default('leresolver') }}"
+      {% if traefik_tls_domains is defined and traefik_tls_domains %}
+      {% for domain in traefik_tls_domains %}
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.tls.domains={{ domain }}"
+      {% endfor %}
+      {% elif traefik_host is defined %}
+      - "traefik.http.routers.{{ traefik_router_name | default(service_name | default('jellyfin')) }}.tls.domains[0].main={{ traefik_host }}"
+      {% endif %}
+      {% endif %}
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.customResponseHeaders.X-Robots-Tag={{ traefik_headers_x_robots | default('noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex') }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.SSLRedirect={{ 'true' if traefik_headers_ssl_redirect | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.SSLHost={{ traefik_headers_ssl_host | default((traefik_host | default('jellyfin.example.dk')) ~ ':9999') }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.SSLForceHost={{ 'true' if traefik_headers_ssl_force_host | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.STSSeconds={{ traefik_headers_sts_seconds | default(315360000) }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.STSIncludeSubdomains={{ 'true' if traefik_headers_sts_include_subdomains | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.STSPreload={{ 'true' if traefik_headers_sts_preload | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.forceSTSHeader={{ 'true' if traefik_headers_force_sts | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.frameDeny={{ 'true' if traefik_headers_frame_deny | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.contentTypeNosniff={{ 'true' if traefik_headers_content_type_nosniff | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.browserXssFilter={{ 'true' if traefik_headers_browser_xss_filter | default(true) else 'false' }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.customResponseHeaders.X-XSS-PROTECTION={{ traefik_headers_xss_protection | default('1; mode=block') }}"
+      - "traefik.http.middlewares.{{ traefik_middleware_name | default(service_name | default('jellyfin')) ~ '-mw' }}.headers.customFrameOptionsValue={{ traefik_headers_custom_frame_options | default("'allow-from https://DOMAIN_NAME'") }}"
+      - "traefik.http.services.{{ traefik_service_name | default(service_name | default('jellyfin')) }}.loadBalancer.server.port={{ jellyfin_internal_http_port | default(8096) }}"
+      - "traefik.http.services.{{ traefik_service_name | default(service_name | default('jellyfin')) }}.loadBalancer.passHostHeader={{ 'true' if traefik_pass_host_header | default(true) else 'false' }}"
+      {% if traefik_insecure_router_enabled | default(true) %}
+      - "traefik.http.routers.{{ traefik_insecure_router_name | default((service_name | default('jellyfin')) ~ '-insecure') }}.entryPoints={{ traefik_entrypoint | default('secure') }}"
+      - "traefik.http.routers.{{ traefik_insecure_router_name | default((service_name | default('jellyfin')) ~ '-insecure') }}.rule={{ traefik_router_rule | default("Host(`" ~ (traefik_host | default('jellyfin.example.dk')) ~ "`)") }}"
+      - "traefik.http.routers.{{ traefik_insecure_router_name | default((service_name | default('jellyfin')) ~ '-insecure') }}.middlewares={{ traefik_insecure_middleware_name | default((service_name | default('jellyfin')) ~ '-redirect') }}"
+      - "traefik.http.middlewares.{{ traefik_insecure_middleware_name | default((service_name | default('jellyfin')) ~ '-redirect') }}.redirectscheme.scheme=https"
+      {% if traefik_redirect_port is defined and traefik_redirect_port %}
+      - "traefik.http.middlewares.{{ traefik_insecure_middleware_name | default((service_name | default('jellyfin')) ~ '-redirect') }}.redirectscheme.port={{ traefik_redirect_port }}"
+      {% endif %}
+      - "traefik.http.middlewares.{{ traefik_insecure_middleware_name | default((service_name | default('jellyfin')) ~ '-redirect') }}.redirectscheme.permanent={{ 'true' if traefik_redirect_permanent | default(false) else 'false' }}"
+      - "traefik.http.routers.{{ traefik_insecure_router_name | default((service_name | default('jellyfin')) ~ '-insecure') }}.service=noop@internal"
+      {% endif %}
+    {% endif %}
+    restart: {{ restart_policy | default('unless-stopped') }}
+
+{% if jellyfin_network_mode | default('host') != 'host' %}
+networks:
+  {{ traefik_network | default('internal') }}:
+    {% if traefik_network_external | default(true) %}
+    external: true
+    {% else %}
+    driver: bridge
+    {% endif %}
+  {% if additional_network_definitions is defined %}
+  {% for network_name, network_def in additional_network_definitions.items() %}
+  {{ network_name }}:
+  {% for key, value in network_def.items() %}
+    {{ key }}: {{ value }}
+  {% endfor %}
+  {% endfor %}
+  {% endif %}
+{% endif %}

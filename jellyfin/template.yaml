@@ -1,0 +1,332 @@
+---
+kind: compose
+metadata:
+  name: Jellyfin
+  description: >
+    Jellyfin is a free and open-source media server that lets you collect, manage, and stream
+    your personal media across devices. This stack deploys the Jellyfin server with support for
+    Traefik-based reverse proxying using the official guide's middleware and TLS recommendations,
+    persistent configuration, and Ansible-friendly overrides for paths, users, and networking.
+
+
+    Project: https://jellyfin.org/
+
+    Documentation: https://jellyfin.org/docs/
+
+    GitHub: https://github.com/jellyfin/jellyfin
+  version: latest
+  author: "Open Source Homelab"
+  date: "2024-10-22"
+  tags:
+    - media-server
+    - streaming
+    - self-hosting
+  draft: false
+spec:
+  # Ansible deployment configuration
+  service_name: "jellyfin"
+  container_name: "jellyfin"
+  jellyfin_image: "ghcr.io/jellyfin/jellyfin"
+  jellyfin_version: "latest"
+  jellyfin_config_path: "/srv/docker/jellyfin/config"
+  jellyfin_cache_path: "/srv/docker/jellyfin/cache"
+  jellyfin_transcode_path: "/srv/docker/jellyfin/transcode"
+  jellyfin_media_path: "/srv/media"
+  jellyfin_timezone: "UTC"
+  jellyfin_puid: 1000
+  jellyfin_pgid: 1000
+  jellyfin_public_url: "https://jellyfin.example.dk"
+  jellyfin_base_url: ""
+  jellyfin_network_mode: "host"
+  restart_policy: "unless-stopped"
+  ports_enabled: false
+  jellyfin_http_port: 8096
+  jellyfin_https_port: 8920
+  jellyfin_internal_http_port: 8096
+  traefik_enabled: true
+  traefik_host: "jellyfin.example.dk"
+  traefik_router_name: "jellyfin"
+  traefik_router_rule: "Host(`jellyfin.example.dk`)"
+  traefik_entrypoint: "secure"
+  traefik_middleware_name: "jellyfin"
+  traefik_insecure_router_enabled: true
+  traefik_insecure_router_name: "jellyfin-insecure"
+  traefik_insecure_middleware_name: "jellyfin-redirect"
+  traefik_service_name: "jellyfin"
+  traefik_service_reference: "jellyfin-svc@file"
+  traefik_pass_host_header: true
+  traefik_redirect_port: 9999
+  traefik_redirect_permanent: false
+  traefik_tls_enabled: true
+  traefik_tls_certresolver: "leresolver"
+  traefik_tls_domains: []
+  traefik_headers_ssl_redirect: true
+  traefik_headers_ssl_host: "jellyfin.example.dk:9999"
+  traefik_headers_ssl_force_host: true
+  traefik_headers_sts_seconds: 315360000
+  traefik_headers_sts_include_subdomains: true
+  traefik_headers_sts_preload: true
+  traefik_headers_force_sts: true
+  traefik_headers_frame_deny: true
+  traefik_headers_content_type_nosniff: true
+  traefik_headers_browser_xss_filter: true
+  traefik_headers_x_robots: "noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+  traefik_headers_xss_protection: "1; mode=block"
+  traefik_headers_custom_frame_options: "'allow-from https://DOMAIN_NAME'"
+  traefik_network: "internal"
+  traefik_network_external: true
+  traefik_host_backend: "192.168.1.100"
+  traefik_file_service_name: "jellyfin-svc"
+  traefik_tls_sni_strict: true
+  traefik_tls_min_version: "VersionTLS12"
+  traefik_tls13_min_version: "VersionTLS13"
+
+  # Config templates and files for Ansible to render
+  config_templates:
+    - src: "traefik-provider.toml.j2"
+      dest: "traefik-provider.toml"
+  config_files: []
+  env_template: "env.jellyfin.j2"
+
+  # Original spec for CLI tool
+  general:
+    title: General
+    required: true
+    vars:
+      jellyfin_version:
+        type: str
+        description: Jellyfin container version tag
+        default: latest
+      jellyfin_timezone:
+        type: str
+        description: Container timezone (TZ)
+        default: UTC
+      jellyfin_config_path:
+        type: str
+        description: Host path for Jellyfin configuration data
+        default: /srv/docker/jellyfin/config
+      jellyfin_cache_path:
+        type: str
+        description: Host path for Jellyfin cache data
+        default: /srv/docker/jellyfin/cache
+      jellyfin_transcode_path:
+        type: str
+        description: Host path used for Jellyfin transcoding temp files
+        default: /srv/docker/jellyfin/transcode
+      jellyfin_media_path:
+        type: str
+        description: Host path exposing media libraries to Jellyfin
+        default: /srv/media
+      jellyfin_public_url:
+        type: str
+        description: Public/internal URL announced by Jellyfin
+        default: https://jellyfin.example.dk
+      jellyfin_base_url:
+        type: str
+        description: Optional Base URL for Jellyfin when served behind a PathPrefix
+        default: ''
+      jellyfin_network_mode:
+        type: str
+        description: Docker network mode for Jellyfin (host required for DLNA per Traefik guide)
+        default: host
+  identity:
+    title: Container Identity
+    vars:
+      jellyfin_puid:
+        type: int
+        description: POSIX user ID used inside the container
+        default: 1000
+      jellyfin_pgid:
+        type: int
+        description: POSIX group ID used inside the container
+        default: 1000
+      jellyfin_user:
+        type: str
+        description: Optional user specification (UID:GID) override
+        default: ""
+  network:
+    title: Networking
+    vars:
+      traefik_enabled:
+        type: bool
+        description: Enable Traefik discovery and routing labels
+        default: true
+      traefik_host:
+        type: str
+        description: Hostname used for the Traefik router rule
+        default: jellyfin.example.dk
+      traefik_router_rule:
+        type: str
+        description: Traefik rule definition (Host/PathPrefix) applied to routers
+        default: Host(`jellyfin.example.dk`)
+      traefik_entrypoint:
+        type: str
+        description: Traefik entrypoint for the secure proxy (default 9999 per guide)
+        default: secure
+      traefik_router_name:
+        type: str
+        description: Name of the primary Traefik router handling Jellyfin traffic
+        default: jellyfin
+      traefik_middleware_name:
+        type: str
+        description: Base name for Traefik middleware labels
+        default: jellyfin
+      traefik_service_name:
+        type: str
+        description: Name of the dynamic Traefik service binding for Jellyfin
+        default: jellyfin
+      traefik_service_reference:
+        type: str
+        description: Traefik router service reference (use @file when host networking is enabled)
+        default: jellyfin-svc@file
+      traefik_pass_host_header:
+        type: bool
+        description: Preserve incoming Host header when forwarding to Jellyfin
+        default: true
+      traefik_insecure_router_enabled:
+        type: bool
+        description: Enable HTTP-to-HTTPS redirect router on the secure entrypoint
+        default: true
+      traefik_insecure_router_name:
+        type: str
+        description: Name of the auxiliary redirect router
+        default: jellyfin-insecure
+      traefik_insecure_middleware_name:
+        type: str
+        description: Name of the redirect middleware used for HTTP->HTTPS
+        default: jellyfin-redirect
+      traefik_redirect_port:
+        type: int
+        description: Port used for redirect scheme when exposing Jellyfin on non-standard HTTPS
+        default: 9999
+      traefik_redirect_permanent:
+        type: bool
+        description: Whether redirects should be permanent
+        default: false
+      traefik_tls_enabled:
+        type: bool
+        description: Enable TLS handling on the Traefik router
+        default: true
+      traefik_tls_certresolver:
+        type: str
+        description: Traefik certificate resolver to use when TLS is enabled
+        default: leresolver
+      traefik_tls_domains:
+        type: list
+        description: Optional list of domain mappings (e.g. tls.domains[0].main=...)
+      traefik_headers_ssl_redirect:
+        type: bool
+        description: Force HTTPS redirects through the middleware
+        default: true
+      traefik_headers_ssl_host:
+        type: str
+        description: Host (optionally with port) for SSL redirect target
+        default: jellyfin.example.dk:9999
+      traefik_headers_ssl_force_host:
+        type: bool
+        description: Force SSL host header even for TLS requests
+        default: true
+      traefik_headers_sts_seconds:
+        type: int
+        description: Strict-Transport-Security max age in seconds
+        default: 315360000
+      traefik_headers_sts_include_subdomains:
+        type: bool
+        description: Include subdomains in the HSTS policy
+        default: true
+      traefik_headers_sts_preload:
+        type: bool
+        description: Enable the HSTS preload directive
+        default: true
+      traefik_headers_force_sts:
+        type: bool
+        description: Add the STS header for HTTP requests
+        default: true
+      traefik_headers_frame_deny:
+        type: bool
+        description: Deny framing via X-Frame-Options header
+        default: true
+      traefik_headers_content_type_nosniff:
+        type: bool
+        description: Enable X-Content-Type-Options nosniff header
+        default: true
+      traefik_headers_browser_xss_filter:
+        type: bool
+        description: Enable browser XSS filter header
+        default: true
+      traefik_headers_x_robots:
+        type: str
+        description: Robots directive applied to responses
+        default: noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex
+      traefik_headers_xss_protection:
+        type: str
+        description: X-XSS-Protection header value
+        default: 1; mode=block
+      traefik_headers_custom_frame_options:
+        type: str
+        description: Custom frame options header value
+        default: "'allow-from https://DOMAIN_NAME'"
+      traefik_network:
+        type: str
+        description: Docker network shared with the Traefik proxy (ignored when using host networking)
+        default: internal
+      traefik_network_external:
+        type: bool
+        description: Treat the Traefik network as externally managed
+        default: true
+      ports_enabled:
+        type: bool
+        description: Publish Jellyfin ports directly on the host
+        default: false
+      jellyfin_http_port:
+        type: int
+        description: Host port for HTTP access when ports are published
+        default: 8096
+      jellyfin_https_port:
+        type: int
+        description: Host port for HTTPS access when ports are published
+        default: 8920
+      traefik_host_backend:
+        type: str
+        description: Host IP or DNS name Jellyfin listens on for Traefik's file provider
+        default: 192.168.1.100
+      traefik_file_service_name:
+        type: str
+        description: Service name used within the file provider template
+        default: jellyfin-svc
+  advanced:
+    title: Advanced Options
+    vars:
+      jellyfin_devices:
+        type: list
+        description: Optional list of device mappings for hardware acceleration
+      jellyfin_group_add:
+        type: list
+        description: Optional list of supplemental groups
+      jellyfin_extra_volumes:
+        type: list
+        description: Additional volume mounts in host:container format
+      additional_networks:
+        type: list
+        description: Extra Docker networks to attach the container to
+      additional_network_definitions:
+        type: dict
+        description: Additional network definitions to render in compose
+      traefik_tls_sni_strict:
+        type: bool
+        description: Enforce strict SNI checking in the file provider TLS options
+        default: true
+      traefik_tls_min_version:
+        type: str
+        description: Minimum TLS version for legacy TLS options
+        default: VersionTLS12
+      traefik_tls13_min_version:
+        type: str
+        description: Minimum TLS version for TLS 1.3 options
+        default: VersionTLS13
+      traefik_tls_curve_preferences:
+        type: list
+        description: Override curve preferences for TLS negotiation
+      traefik_tls_cipher_suites:
+        type: list
+        description: Override cipher suites for TLS negotiation
