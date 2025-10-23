@@ -1,0 +1,38 @@
+[http]
+  [http.services]
+    [http.services.{{ traefik_file_service_name | default((service_name | default('jellyfin')) ~ '-svc') }}]
+      [[http.services.{{ traefik_file_service_name | default((service_name | default('jellyfin')) ~ '-svc') }}.loadBalancer.servers]]
+        url = "http://{{ traefik_host_backend | default('192.168.1.100') }}:{{ jellyfin_internal_http_port | default(8096) }}"
+
+[tls.options]
+  [tls.options.default]
+    sniStrict = {{ 'true' if traefik_tls_sni_strict | default(true) else 'false' }}
+    minVersion = "{{ traefik_tls_min_version | default('VersionTLS12') }}"
+    curvePreferences = [
+      {% if traefik_tls_curve_preferences is defined and traefik_tls_curve_preferences %}
+      {% for curve in traefik_tls_curve_preferences %}
+      "{{ curve }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+      {% else %}
+      "secp521r1",
+      "secp384r1"
+      {% endif %}
+    ]
+    cipherSuites = [
+      {% if traefik_tls_cipher_suites is defined and traefik_tls_cipher_suites %}
+      {% for suite in traefik_tls_cipher_suites %}
+      "{{ suite }}"{% if not loop.last %},{% endif %}
+      {% endfor %}
+      {% else %}
+      "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
+      "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+      {% endif %}
+    ]
+  [tls.options.mintls13]
+    minVersion = "{{ traefik_tls13_min_version | default('VersionTLS13') }}"
