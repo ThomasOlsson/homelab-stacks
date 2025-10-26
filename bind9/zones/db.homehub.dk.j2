@@ -1,6 +1,6 @@
 $TTL 86400
 @       IN      SOA     ns1.{{ domain_name }}. {{ contact_email | replace('@', '.') }}. (
-                        2025102601         ; Serial (YYYYMMDDNN)
+                        2025102602         ; Serial (YYYYMMDDNN)
                         3600               ; Refresh
                         1800               ; Retry
                         604800             ; Expire
@@ -26,6 +26,10 @@ lxc-prod-3.prx-prod-1   IN      A       10.2.10.130
 
 ; VM Servers (format: srv-prod-X.prx-prod-Y.homehub.dk)
 srv-prod-1.prx-prod-2   IN      A       10.2.0.190
+
+; Traefik Instances (by network)
+traefik-prod-1.home     IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
+traefik-prod-2.home     IN      CNAME   srv-prod-1.prx-prod-2.homehub.dk.
 
 ; AI Services - Public (via Traefik on lxc-prod-2)
 frontend                IN      CNAME   lxc-prod-2.prx-prod-1.homehub.dk.
