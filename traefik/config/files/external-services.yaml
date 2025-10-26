@@ -1,7 +1,39 @@
 ---
-# Example: External Service Configuration
-# This is a commented example showing how to proxy to external services
-# Uncomment and customize for your needs
+# External Service Configuration
+# Routes for services not running in Docker on this host
+
+http:
+  routers:
+    # Zigbee2MQTT on IoT server
+    z2m-router:
+      rule: "Host(`z2m.home.homehub.dk`)"
+      service: z2m-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cf
+    
+    # Home Assistant on dedicated VM
+    ha-home-router:
+      rule: "Host(`ha.home.homehub.dk`)"
+      service: ha-home-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cf
+
+  services:
+    # Zigbee2MQTT Service (HTTP backend on IoT server)
+    z2m-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.2.10.130:8099"
+    
+    # Home Assistant Service (HTTP backend)
+    ha-home-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.2.1.200:8123"
 
 # http:
 #   routers:
