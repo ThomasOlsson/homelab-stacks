@@ -6,6 +6,8 @@
 # Define custom TLS settings for different security requirements
 tls:
   options:
+    default:
+      minVersion: VersionTLS12
     # Example: Modern TLS Configuration (Recommended)
     # Uncomment and customize as needed
     # modern:
